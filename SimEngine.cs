@@ -35,7 +35,7 @@ namespace NetSim
             _onComplete?.Invoke(StatusMessage);
         }
 
-        private void Simulate(Device src, Device dst)
+        internal void Simulate(Device src, Device dst)
         {
             try
             {
@@ -261,7 +261,7 @@ namespace NetSim
             }
         }
 
-        private bool IsSameNetwork(string ip1, string ip2, string mask)
+        internal bool IsSameNetwork(string ip1, string ip2, string mask)
         {
             try
             {
@@ -274,7 +274,7 @@ namespace NetSim
             catch { return false; }
         }
 
-        private string ArpResolve(Device device, string ip, bool allowRouterFallback = true)
+        internal string ArpResolve(Device device, string ip, bool allowRouterFallback = true)
         {
             // Check local ARP cache
             var mac = device.ArpTable.GetMac(ip);
@@ -322,7 +322,7 @@ namespace NetSim
             return null;
         }
 
-        private Device FindRouterOnPath(Device start, HashSet<string> visited)
+        internal Device FindRouterOnPath(Device start, HashSet<string> visited)
         {
             if (visited.Contains(start.Id)) return null;
             visited.Add(start.Id);
@@ -336,7 +336,7 @@ namespace NetSim
             return null;
         }
 
-        private Device FindPCByIP(Device start, string ip, HashSet<string> visited)
+        internal Device FindPCByIP(Device start, string ip, HashSet<string> visited)
         {
             if (visited.Contains(start.Id)) return null;
             visited.Add(start.Id);
@@ -429,7 +429,7 @@ namespace NetSim
                 step.Device.Logs.Add(new LogEntry { Time = DateTime.Now, Layer = step.Layer, Message = step.Detail });
         }
 
-        private bool IsPrivateIP(string ip)
+        internal bool IsPrivateIP(string ip)
         {
             try
             {
@@ -439,7 +439,7 @@ namespace NetSim
             catch { return false; }
         }
 
-        private void PreLearnMacs()
+        internal void PreLearnMacs()
         {
             // Pre-populate MAC tables on switches and ARP tables on routers
             foreach (var dev in _devices)
