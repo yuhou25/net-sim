@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build (Release)
+      run: msbuild net-sim.csproj /p:Configuration=Release /p:Platform=AnyCPU /restore
+
+    - name: Package bin folder
+      shell: pwsh
+      run: |
+        $out = "bin\Release"
+        if (-not (Test-Path $out)) { throw "Build output not found: $out" }
+        Compress-Archive -Path "$out\*" -DestinationPath "NetSim-${{ github.ref_name }}.zip" -Force
+        Get-ChildItem $out | Select-Object Name, Length
+        Write-Host "zip artifact: NetSim-${{ github.ref_name }}.zip"
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NetSim-${{ github.run_number }}
+        path: bin\Release\
+        if-no-files-found: error
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: NetSim-${{ github.ref_name }}.zip
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
