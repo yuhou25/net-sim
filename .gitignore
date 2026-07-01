@@ -1,0 +1,27 @@
+## .NET 构建产物
+bin/
+obj/
+
+## Visual Studio 临时文件
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## Build 日志与临时
+*.log
+TestResults/
+[Bb]uild[Ll]og.*
+
+## 操作系统杂项
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
